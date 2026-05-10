@@ -13,23 +13,44 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import LogoFilter from "@/components/LogoFilter";
 
-const scrollToContact = () => {
-  const el = document.querySelector("#contact");
-  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+const scrollToAssessment = () => {
+  const el = document.querySelector("#assessment-form");
+
+  if (el) {
+    el.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
 };
 
 const Home = () => (
-  <main data-testid="home-page" className="relative bg-[#05050A] text-white overflow-x-hidden">
+  <main
+    data-testid="home-page"
+    className="relative bg-[#05050A] text-white overflow-x-hidden"
+  >
     <LogoFilter />
     <Navbar />
-    <Hero onPrimary={scrollToContact} onSecondary={scrollToContact} />
+
+    <Hero
+      onPrimary={scrollToAssessment}
+      onSecondary={scrollToAssessment}
+    />
+
     <WhyChooseUs />
-    <Products onRequest={scrollToContact} />
-    <Services onRequest={scrollToContact} />
+
+    <Products onRequest={scrollToAssessment} />
+
+    <Services onRequest={scrollToAssessment} />
+
     <Proof />
-    <FinalCTA onClick={scrollToContact} />
+
+    <FinalCTA onClick={scrollToAssessment} />
+
     <Careers />
+
     <Contact />
+
     <Footer />
   </main>
 );
@@ -48,6 +69,7 @@ function App() {
           },
         }}
       />
+
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />

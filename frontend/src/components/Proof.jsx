@@ -29,7 +29,10 @@ const LOGOS = [
     name: "Westin Hotels & Resorts",
     src: "https://customer-assets.emergentagent.com/job_sira-secure/artifacts/uhm5eqj9_image.png",
   },
-  { name: "Aloft Hotels", src: "https://customer-assets.emergentagent.com/job_sira-secure/artifacts/lj77b0gy_image.png" },
+  {
+    name: "Aloft Hotels",
+    src: "https://customer-assets.emergentagent.com/job_sira-secure/artifacts/lj77b0gy_image.png",
+  },
 ];
 
 const PROJECTS = [
@@ -37,21 +40,24 @@ const PROJECTS = [
     id: "marina-tower",
     name: "Marina Residences",
     system: "CCTV + Access Control",
-    outcome: "Fully integrated 240-camera deployment with centralized monitoring and SIRA sign-off on first inspection.",
+    outcome:
+      "Fully integrated 240-camera deployment with centralized monitoring and SIRA sign-off on first inspection.",
     image: IMAGES.project1,
   },
   {
     id: "logistics-park",
     name: "Jebel Ali Logistics Park",
     system: "ANPR + Perimeter Security",
-    outcome: "Automated gate control and 24/7 ANPR logs reduced entry times by 68% across 6 checkpoints.",
+    outcome:
+      "Automated gate control and 24/7 ANPR logs reduced entry times by 68% across 6 checkpoints.",
     image: IMAGES.project2,
   },
   {
     id: "corporate-hq",
     name: "Business Bay Corporate HQ",
     system: "Smart Building + Integration",
-    outcome: "Unified security, access, and automation cut operating overhead and delivered a single operator dashboard.",
+    outcome:
+      "Unified security, access, and automation cut operating overhead and delivered a single operator dashboard.",
     image: IMAGES.project3,
   },
 ];
@@ -59,11 +65,14 @@ const PROJECTS = [
 function ProjectCard({ p }) {
   const [imgRef, imgOffset] = useParallax(0.12);
   const [ref, visible] = useReveal();
+
   return (
     <article
       ref={ref}
       data-testid={`project-${p.id}`}
-      className={`reveal ${visible ? "is-visible" : ""} group relative overflow-hidden rounded-2xl border border-[#1E2235] bg-[#0F111A] hover:border-[#0055FF]/50 transition-all`}
+      className={`reveal ${
+        visible ? "is-visible" : ""
+      } group relative overflow-hidden rounded-2xl border border-[#1E2235] bg-[#0F111A] hover:border-[#0055FF]/50 transition-all`}
     >
       <div className="relative h-56 overflow-hidden">
         <img
@@ -74,15 +83,19 @@ function ProjectCard({ p }) {
           style={{ transform: `translate3d(0, ${imgOffset}px, 0) scale(1.1)` }}
           className="absolute inset-0 h-[115%] w-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-700 will-change-transform"
         />
+
         <div className="absolute inset-0 bg-gradient-to-t from-[#0F111A] via-[#0F111A]/20 to-transparent" />
       </div>
+
       <div className="p-7">
         <div className="text-[10px] uppercase tracking-[0.22em] text-[#00E5FF] font-medium">
           {p.system}
         </div>
+
         <h4 className="mt-3 font-display font-bold text-xl text-white tracking-tight">
           {p.name}
         </h4>
+
         <p className="mt-3 text-[14px] text-[#94A3B8] leading-relaxed">
           {p.outcome}
         </p>
@@ -111,6 +124,7 @@ export default function Proof() {
               <div className="font-display font-black text-4xl md:text-5xl tracking-tighter text-white">
                 {s.k}
               </div>
+
               <div className="mt-2 text-[11px] uppercase tracking-[0.22em] text-[#94A3B8]">
                 {s.v}
               </div>
@@ -123,6 +137,7 @@ export default function Proof() {
           <div className="text-center text-[11px] uppercase tracking-[0.28em] text-[#94A3B8] mb-10">
             — Trusted by leading hotels, developers & operators
           </div>
+
           <div className="relative overflow-hidden py-6 border-y border-[#1E2235]">
             <div className="flex w-max animate-marquee">
               {[0, 1].map((dup) => (
@@ -134,7 +149,9 @@ export default function Proof() {
                   {LOGOS.map((logo, i) => (
                     <div
                       key={`${dup}-${i}`}
-                      data-testid={dup === 0 ? `client-logo-${i}` : undefined}
+                      data-testid={
+                        dup === 0 ? `client-logo-${i}` : undefined
+                      }
                       title={logo.name}
                       className="shrink-0 flex items-center justify-center rounded-xl bg-white/[0.04] border border-white/10 px-6 py-3 h-20 md:h-24 min-w-[180px] md:min-w-[220px] hover:bg-white/[0.08] hover:border-white/20 transition-colors"
                     >
@@ -153,7 +170,9 @@ export default function Proof() {
                 </div>
               ))}
             </div>
+
             <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#07080F] to-transparent" />
+
             <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#07080F] to-transparent" />
           </div>
         </div>
@@ -167,6 +186,7 @@ export default function Proof() {
             >
               Project highlights
             </h3>
+
             <div className="text-sm text-[#94A3B8] hidden md:block">
               Recent deployments across Dubai & the UAE
             </div>

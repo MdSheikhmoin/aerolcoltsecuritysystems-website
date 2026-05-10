@@ -26,6 +26,7 @@ const PERKS = [
 
 function PerkCard({ p, i }) {
   const [ref, visible] = useReveal();
+
   return (
     <div
       ref={ref}
@@ -38,9 +39,11 @@ function PerkCard({ p, i }) {
       <div className="h-12 w-12 rounded-xl bg-[#0055FF]/10 border border-[#0055FF]/30 flex items-center justify-center mb-5 group-hover:border-[#00E5FF]/60 group-hover:bg-[#00E5FF]/10 transition-colors">
         <p.Icon className="h-5 w-5 text-[#00E5FF]" strokeWidth={2} />
       </div>
+
       <h3 className="font-display font-bold text-lg md:text-xl text-white tracking-tight">
         {p.title}
       </h3>
+
       <p className="mt-3 text-[14.5px] text-[#94A3B8] leading-relaxed">
         {p.desc}
       </p>
@@ -50,11 +53,12 @@ function PerkCard({ p, i }) {
 
 export default function Careers() {
   const [headRef, headVisible] = useReveal();
-  const subject = encodeURIComponent("Careers — Application");
-  const body = encodeURIComponent(
-    "Hi Aerol Colt team,%0D%0A%0D%0AI'd like to apply for a role. Please find my CV attached.%0D%0A%0D%0AName:%0D%0APhone:%0D%0ARole of interest:%0D%0A"
-  );
-  const mailto = `mailto:${SITE.email}?subject=${subject}&body=${body}`;
+
+  const handleApply = () => {
+    const subject = encodeURIComponent("Careers — Application");
+
+    window.location.href = `mailto:${SITE.email}?subject=${subject}`;
+  };
 
   return (
     <section
@@ -63,17 +67,21 @@ export default function Careers() {
       className="relative py-24 md:py-32 overflow-hidden"
     >
       <div className="absolute inset-0 bg-grid opacity-[0.2] pointer-events-none" />
+
       <div className="absolute -top-24 left-1/3 h-[360px] w-[720px] rounded-full bg-[#0055FF]/15 blur-[140px] pointer-events-none" />
 
       <div className="relative mx-auto max-w-7xl px-6 md:px-10 lg:px-12">
         <div
           ref={headRef}
-          className={`reveal ${headVisible ? "is-visible" : ""} grid lg:grid-cols-12 gap-10 items-end mb-14`}
+          className={`reveal ${
+            headVisible ? "is-visible" : ""
+          } grid lg:grid-cols-12 gap-10 items-end mb-14`}
         >
           <div className="lg:col-span-7">
             <div className="text-[11px] uppercase tracking-[0.28em] text-[#00E5FF] mb-4 font-medium">
               — Careers
             </div>
+
             <h2
               data-testid="careers-heading"
               className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl tracking-tighter text-white leading-[1.08]"
@@ -81,6 +89,7 @@ export default function Careers() {
               Build systems that protect what matters.
             </h2>
           </div>
+
           <div className="lg:col-span-5">
             <p className="text-[#94A3B8] leading-relaxed">
               We&apos;re hiring engineers, installers, project managers, and
@@ -101,21 +110,22 @@ export default function Careers() {
             <h3 className="font-display font-bold text-xl md:text-2xl text-white tracking-tight">
               Interested? Send us your CV.
             </h3>
+
             <p className="mt-2 text-[#94A3B8] text-[15px]">
               Email us at{" "}
               <span className="text-white">{SITE.email}</span> with the role
               you&apos;re applying for.
             </p>
           </div>
+
           <Button
-            asChild
+            onClick={handleApply}
             data-testid="careers-apply-button"
             className="group bg-[#0055FF] hover:bg-[#0033CC] text-white font-semibold rounded-full h-12 px-7 text-base shadow-[0_0_24px_rgba(0,85,255,0.45)] hover:shadow-[0_0_36px_rgba(0,85,255,0.65)] transition-all"
           >
-            <a href={mailto}>
-              Apply now
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </a>
+            Apply now
+
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Button>
         </div>
       </div>

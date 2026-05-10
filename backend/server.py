@@ -16,8 +16,6 @@ from pydantic import BaseModel, Field, ConfigDict
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-from motor.motor_asyncio import AsyncIOMotorClient
-
 
 # =========================================================
 # LOAD ENV
@@ -46,17 +44,6 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
-
-
-# =========================================================
-# MONGODB
-# =========================================================
-
-MONGO_URL = os.environ["MONGO_URL"]
-
-client = AsyncIOMotorClient(MONGO_URL)
-
-db = client["aerolcolt_db"]
 
 
 # =========================================================
@@ -221,19 +208,6 @@ async def create_lead(payload: LeadCreate):
 
         # CREATE LEAD OBJECT
         lead = Lead(**payload.model_dump())
-
-        # STORE IN MONGODB
-        lead_data = lead.model_dump()
-
-        lead_data["created_at"] = (
-            lead.created_at.isoformat()
-        )
-
-        await db.leads.insert_one(lead_data)
-
-        logger.info(
-            f"Lead stored in MongoDB: {lead.id}"
-        )
 
         # SEND EMAIL
         send_lead_email(lead)

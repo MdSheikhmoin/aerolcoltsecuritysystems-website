@@ -1,5 +1,16 @@
 .App {
-    min-height: 100vh;
-    background: #05050a;
-    color: #f8fafc;
+  min-height: 100vh;
+  background: #05050a;
+  color: #f8fafc;
+}
+
+/* HIDE MOBILE NAV SCROLLBAR */
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
