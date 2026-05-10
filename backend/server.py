@@ -1,256 +1,109 @@
-from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi import FastAPI, APIRouter
+from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import create_engine, Column, String, Text
+from sqlalchemy.orm import declarative_base, sessionmaker
 from dotenv import load_dotenv
-from starlette.middleware.cors import CORSMiddleware
-
-import os
-import logging
-import uuid
-import smtplib
-
+from pydantic import BaseModel, Field
+from typing import Optional
 from pathlib import Path
-from datetime import datetime, timezone
-from typing import Optional, Literal
+import uuid
+import os
 
-from pydantic import BaseModel, Field, ConfigDict
-
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-
-
-# =========================================================
-# LOAD ENV
-# =========================================================
-
+# Load .env
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / ".env")
 
+# ENV
+DATABASE_URL = os.getenv("DATABASE_URL")
+CORS_ORIGINS = os.getenv("CORS_ORIGINS", "*").split(",")
 
-# =========================================================
-# APP SETUP
-# =========================================================
+# Database
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(bind=engine)
 
-app = FastAPI(title="Aerol Colt Security Systems API")
+Base = declarative_base()
 
+# FastAPI
+app = FastAPI(title="Aerol Colt API")
 api_router = APIRouter(prefix="/api")
 
-
-# =========================================================
-# LOGGING
-# =========================================================
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
-
-logger = logging.getLogger(__name__)
-
-
-# =========================================================
-# MODELS
-# =========================================================
-
-class LeadCreate(BaseModel):
-    name: str = Field(..., min_length=2, max_length=120)
-    phone: str = Field(..., min_length=5, max_length=40)
-    email: Optional[str] = Field(default=None, max_length=160)
-    message: Optional[str] = Field(default=None, max_length=2000)
-
-    source: Literal[
-        "site_assessment",
-        "custom_quote",
-        "contact_form"
-    ] = "contact_form"
-
-
-class Lead(BaseModel):
-
-    model_config = ConfigDict(extra="ignore")
-
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-
-    name: str
-    phone: str
-
-    email: Optional[str] = None
-    message: Optional[str] = None
-
-    source: str = "contact_form"
-
-    created_at: datetime = Field(
-        default_factory=lambda: datetime.now(timezone.utc)
-    )
-
-
-# =========================================================
-# ROOT ROUTE
-# =========================================================
-
-@api_router.get("/")
-async def root():
-
-    return {
-        "message": "Aerol Colt Security Systems API is online"
-    }
-
-
-# =========================================================
-# EMAIL FUNCTION
-# =========================================================
-
-def send_lead_email(lead: Lead):
-
-    smtp_server = os.environ["SMTP_SERVER"]
-    smtp_port = int(os.environ["SMTP_PORT"])
-
-    smtp_email = os.environ["SMTP_EMAIL"]
-    smtp_password = os.environ["SMTP_PASSWORD"]
-
-    recipient_email = os.environ["RECIPIENT_EMAIL"]
-
-    subject = f"New Lead • {lead.name}"
-
-    html_body = f"""
-    <html>
-    <body style="font-family: Arial, sans-serif; background:#f4f4f4; padding:20px;">
-
-        <div style="
-            max-width:600px;
-            margin:auto;
-            background:white;
-            padding:30px;
-            border-radius:12px;
-            border:1px solid #e5e5e5;
-        ">
-
-            <h2 style="margin-top:0;">
-                New Website Lead
-            </h2>
-
-            <p style="color:#666;">
-                A new inquiry has been submitted through the website.
-            </p>
-
-            <hr style="margin:20px 0;">
-
-            <p>
-                <strong>Name:</strong><br>
-                {lead.name}
-            </p>
-
-            <p>
-                <strong>Phone:</strong><br>
-                {lead.phone}
-            </p>
-
-            <p>
-                <strong>Email:</strong><br>
-                {lead.email or "Not provided"}
-            </p>
-
-            <p>
-                <strong>Lead Source:</strong><br>
-                {lead.source}
-            </p>
-
-            <p>
-                <strong>Message:</strong><br>
-                {lead.message or "No message"}
-            </p>
-
-            <hr style="margin:20px 0;">
-
-            <p style="font-size:12px; color:#999;">
-                Lead ID: {lead.id}
-            </p>
-
-        </div>
-
-    </body>
-    </html>
-    """
-
-    msg = MIMEMultipart("alternative")
-
-    msg["From"] = smtp_email
-    msg["To"] = recipient_email
-    msg["Subject"] = subject
-
-    msg.attach(MIMEText(html_body, "html"))
-
-    server = smtplib.SMTP_SSL(
-        smtp_server,
-        smtp_port
-    )
-
-    server.login(
-        smtp_email,
-        smtp_password
-    )
-
-    server.sendmail(
-        smtp_email,
-        recipient_email,
-        msg.as_string()
-    )
-
-    server.quit()
-
-
-# =========================================================
-# CREATE LEAD
-# =========================================================
-
-@api_router.post("/leads", response_model=Lead)
-async def create_lead(payload: LeadCreate):
-
-    try:
-
-        # CREATE LEAD OBJECT
-        lead = Lead(**payload.model_dump())
-
-        # SEND EMAIL
-        send_lead_email(lead)
-
-        logger.info(
-            f"Lead email sent successfully: {lead.id}"
-        )
-
-        return lead
-
-    except Exception as e:
-
-        logger.error(
-            f"Lead submission failed: {str(e)}"
-        )
-
-        raise HTTPException(
-            status_code=500,
-            detail="Failed to submit lead"
-        )
-
-
-# =========================================================
-# INCLUDE ROUTER
-# =========================================================
-
-app.include_router(api_router)
-
-
-# =========================================================
 # CORS
-# =========================================================
-
 app.add_middleware(
     CORSMiddleware,
-
+    allow_origins=CORS_ORIGINS,
     allow_credentials=True,
-
-    allow_origins=os.environ.get(
-        "CORS_ORIGINS",
-        "*"
-    ).split(","),
-
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Database Model
+class LeadDB(Base):
+    __tablename__ = "leads"
+
+    id = Column(String(100), primary_key=True, index=True)
+    name = Column(String(120))
+    phone = Column(String(50))
+    email = Column(String(160))
+    message = Column(Text)
+
+# Create tables
+Base.metadata.create_all(bind=engine)
+
+# Pydantic Model
+class LeadCreate(BaseModel):
+    name: str = Field(..., min_length=2)
+    phone: str
+    email: Optional[str] = None
+    message: Optional[str] = None
+
+# Routes
+@api_router.get("/")
+async def root():
+    return {"message": "API Working"}
+
+@api_router.post("/leads")
+async def create_lead(payload: LeadCreate):
+
+    db = SessionLocal()
+
+    lead = LeadDB(
+        id=str(uuid.uuid4()),
+        name=payload.name,
+        phone=payload.phone,
+        email=payload.email,
+        message=payload.message
+    )
+
+    db.add(lead)
+    db.commit()
+
+    db.close()
+
+    return {
+        "success": True,
+        "message": "Lead saved"
+    }
+
+@api_router.get("/leads")
+async def get_leads():
+
+    db = SessionLocal()
+
+    leads = db.query(LeadDB).all()
+
+    data = []
+
+    for lead in leads:
+        data.append({
+            "id": lead.id,
+            "name": lead.name,
+            "phone": lead.phone,
+            "email": lead.email,
+            "message": lead.message
+        })
+
+    db.close()
+
+    return data
+
+app.include_router(api_router)

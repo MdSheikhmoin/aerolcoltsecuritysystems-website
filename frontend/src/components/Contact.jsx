@@ -15,8 +15,7 @@ import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { SITE } from "../lib/site";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+const API = process.env.REACT_APP_BACKEND_URL;
 
 export default function Contact({
   defaultSource = "site_assessment",
@@ -49,7 +48,7 @@ export default function Contact({
     setLoading(true);
 
     try {
-      await axios.post(`${API}/leads`, {
+      await axios.post(`${API}/submit_lead.php`, {
         name: form.name.trim(),
         phone: `+971${form.phone.trim()}`,
         email: form.email.trim() || null,
