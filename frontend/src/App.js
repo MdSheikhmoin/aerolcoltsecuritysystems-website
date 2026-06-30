@@ -1,17 +1,22 @@
 import "@/App.css";
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
+
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import WhyChooseUs from "@/components/WhyChooseUs";
 import Products from "@/components/Products";
 import Services from "@/components/Services";
-import Proof from "@/components/Proof";
-import FinalCTA from "@/components/FinalCTA";
-import Careers from "@/components/Careers";
-import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import LogoFilter from "@/components/LogoFilter";
+import Solidarity from "@/components/Solidarity";
+
+// Lazy-loaded heavy sections
+const Proof = lazy(() => import("@/components/Proof"));
+const FinalCTA = lazy(() => import("@/components/FinalCTA"));
+const Careers = lazy(() => import("@/components/Careers"));
+const Contact = lazy(() => import("@/components/Contact"));
 
 const scrollToAssessment = () => {
   const el = document.querySelector("#assessment-form");
@@ -24,18 +29,20 @@ const scrollToAssessment = () => {
   }
 };
 
+const SectionLoader = () => (
+  <div className="w-full py-16" />
+);
+
 const Home = () => (
   <main
     data-testid="home-page"
     className="relative bg-[#05050A] text-white overflow-x-hidden"
   >
     <LogoFilter />
+
     <Navbar />
 
-    <Hero
-      onPrimary={scrollToAssessment}
-      onSecondary={scrollToAssessment}
-    />
+    <Solidarity onCtaClick={scrollToAssessment} />
 
     <WhyChooseUs />
 
@@ -43,13 +50,21 @@ const Home = () => (
 
     <Services onRequest={scrollToAssessment} />
 
-    <Proof />
+    <Suspense fallback={<SectionLoader />}>
+      <Proof />
+    </Suspense>
 
-    <FinalCTA onClick={scrollToAssessment} />
+    <Suspense fallback={<SectionLoader />}>
+      <FinalCTA onClick={scrollToAssessment} />
+    </Suspense>
 
-    <Careers />
+    <Suspense fallback={<SectionLoader />}>
+      <Careers />
+    </Suspense>
 
-    <Contact />
+    <Suspense fallback={<SectionLoader />}>
+      <Contact />
+    </Suspense>
 
     <Footer />
   </main>

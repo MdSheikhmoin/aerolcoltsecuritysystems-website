@@ -14,3 +14,49 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* PERFORMANCE OPTIMIZATIONS */
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Reduce expensive rendering work on phones */
+
+@media (max-width: 767px) {
+  .bg-grid {
+    display: none !important;
+  }
+
+  .glow-ring,
+  .blur-3xl,
+  .blur-\[140px\],
+  .blur-\[160px\],
+  .backdrop-blur,
+  .backdrop-blur-xl,
+  .backdrop-blur-md {
+    filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .fade-up {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  * {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Reduced motion users */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

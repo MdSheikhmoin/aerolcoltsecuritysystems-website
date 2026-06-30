@@ -1,5 +1,11 @@
 import { useReveal } from "../lib/useScrollFx";
 
+const isMobile =
+  typeof window !== "undefined" &&
+  (window.innerWidth < 768 ||
+    "ontouchstart" in window ||
+    navigator.maxTouchPoints > 0);
+
 const SERVICES = [
   {
     id: "installation",
@@ -35,6 +41,7 @@ const SERVICES = [
 
 function ServiceRow({ s, onRequest }) {
   const [ref, visible] = useReveal();
+
   return (
     <li
       ref={ref}
@@ -48,15 +55,19 @@ function ServiceRow({ s, onRequest }) {
           onRequest?.();
         }
       }}
-      className={`reveal ${visible ? "is-visible" : ""} group relative py-7 md:py-8 flex items-start gap-6 md:gap-10 hover:bg-[#0F111A]/60 transition-colors px-2 md:px-4 cursor-pointer focus:outline-none focus:bg-[#0F111A]/80`}
+      className={`reveal ${
+        visible ? "is-visible" : ""
+      } group relative py-7 md:py-8 flex items-start gap-6 md:gap-10 hover:bg-[#0F111A]/60 transition-colors px-2 md:px-4 cursor-pointer focus:outline-none focus:bg-[#0F111A]/80`}
     >
       <div className="font-mono text-[12px] tracking-widest text-[#94A3B8] pt-1 w-10 shrink-0">
         {s.no}
       </div>
+
       <div className="flex-1">
         <h3 className="font-display font-semibold text-xl md:text-2xl tracking-tight text-white group-hover:text-[#00E5FF] transition-colors">
           {s.title}
         </h3>
+
         <p className="mt-2 text-[#94A3B8] text-[15px] leading-relaxed max-w-2xl">
           {s.desc}
         </p>
@@ -78,12 +89,14 @@ export default function Services({ onRequest }) {
             <div className="text-[11px] uppercase tracking-[0.28em] text-[#00E5FF] mb-4 font-medium">
               — Services
             </div>
+
             <h2
               data-testid="services-heading"
               className="font-display font-bold text-4xl sm:text-5xl tracking-tighter text-white"
             >
               Engineered to deliver. Supported to last.
             </h2>
+
             <p className="mt-6 text-[#94A3B8] leading-relaxed">
               A single accountable team across the full lifecycle — design,
               deployment, and long-term support.
@@ -92,7 +105,11 @@ export default function Services({ onRequest }) {
 
           <ul className="lg:col-span-8 divide-y divide-[#1E2235] border-y border-[#1E2235]">
             {SERVICES.map((s) => (
-              <ServiceRow key={s.id} s={s} onRequest={onRequest} />
+              <ServiceRow
+                key={s.id}
+                s={s}
+                onRequest={onRequest}
+              />
             ))}
           </ul>
         </div>

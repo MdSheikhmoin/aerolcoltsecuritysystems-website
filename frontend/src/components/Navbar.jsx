@@ -14,12 +14,28 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
+  const isMobile =
+    typeof window !== "undefined" && window.innerWidth < 768;
+
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    let ticking = false;
+
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 20);
+          ticking = false;
+        });
+
+        ticking = true;
+      }
+    };
 
     onScroll();
 
-    window.addEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll, {
+      passive: true,
+    });
 
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -29,7 +45,7 @@ export default function Navbar() {
 
     if (el) {
       el.scrollIntoView({
-        behavior: "smooth",
+        behavior: isMobile ? "auto" : "smooth",
         block: "start",
       });
     }
@@ -40,15 +56,14 @@ export default function Navbar() {
       data-testid="site-navbar"
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "backdrop-blur-xl bg-[#05050A]/80 border-b border-white/5"
+          ? "bg-[#05050A]/95 md:backdrop-blur-xl border-b border-white/5"
           : "bg-transparent"
       }`}
     >
       <div className="mx-auto max-w-7xl px-4 md:px-10 lg:px-12">
         
-        {/* DESKTOP NAVBAR */}
+        {/* DESKTOP */}
         <div className="hidden md:flex py-4 items-center justify-between">
-          
           <a
             href="#home"
             data-testid="navbar-logo"
@@ -61,8 +76,9 @@ export default function Navbar() {
             <img
               src={SITE.logo}
               alt="Aerol Colt Security Systems"
-              className="h-14 w-14 object-contain drop-shadow-[0_0_18px_rgba(0,85,255,0.7)]"
+              className="h-14 w-auto object-contain"
               style={{ filter: "url(#logo-knockout)" }}
+              decoding="async"
             />
 
             <div className="leading-tight">
@@ -100,7 +116,7 @@ export default function Navbar() {
           </Button>
         </div>
 
-        {/* MOBILE NAVBAR */}
+        {/* MOBILE */}
         <div className="md:hidden flex items-center gap-4 py-4 overflow-hidden">
           
           {/* LOGO */}
@@ -115,8 +131,8 @@ export default function Navbar() {
             <img
               src={SITE.logo}
               alt="Aerol Colt Security Systems"
-              className="h-11 w-11 object-contain drop-shadow-[0_0_18px_rgba(0,85,255,0.7)]"
-              style={{ filter: "url(#logo-knockout)" }}
+              className="h-11 w-auto object-contain"
+              decoding="async"
             />
           </a>
 

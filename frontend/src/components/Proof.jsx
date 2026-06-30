@@ -1,6 +1,19 @@
 import { IMAGES } from "../lib/site";
 import { useParallax, useReveal } from "../lib/useScrollFx";
 
+import lemeridien from "../assets/images/lemeridien.png";
+import marriott from "../assets/images/marriott.png";
+import whotels from "../assets/images/w-hotels.png";
+import grosvenor from "../assets/images/grosvenor.png";
+import westin from "../assets/images/westin.png";
+import aloft from "../assets/images/aloft.png";
+
+const isMobile =
+  typeof window !== "undefined" &&
+  (window.innerWidth < 768 ||
+    "ontouchstart" in window ||
+    navigator.maxTouchPoints > 0);
+
 const STATS = [
   { k: "6,000+", v: "Systems Installed" },
   { k: "100%", v: "SIRA-Compliant" },
@@ -11,27 +24,27 @@ const STATS = [
 const LOGOS = [
   {
     name: "Le Méridien",
-    src: "https://customer-assets.emergentagent.com/job_sira-secure/artifacts/3dryzq96_image.png",
+    src: lemeridien,
   },
   {
     name: "Marriott International",
-    src: "https://customer-assets.emergentagent.com/job_sira-secure/artifacts/telwvw7o_image.png",
+    src: marriott,
   },
   {
     name: "W Hotels",
-    src: "https://customer-assets.emergentagent.com/job_sira-secure/artifacts/5vz8tntd_image.png",
+    src: whotels,
   },
   {
     name: "Grosvenor House Dubai",
-    src: "https://customer-assets.emergentagent.com/job_sira-secure/artifacts/1eb1odor_image.png",
+    src: grosvenor,
   },
   {
     name: "Westin Hotels & Resorts",
-    src: "https://customer-assets.emergentagent.com/job_sira-secure/artifacts/uhm5eqj9_image.png",
+    src: westin,
   },
   {
     name: "Aloft Hotels",
-    src: "https://customer-assets.emergentagent.com/job_sira-secure/artifacts/lj77b0gy_image.png",
+    src: aloft,
   },
 ];
 
@@ -63,7 +76,7 @@ const PROJECTS = [
 ];
 
 function ProjectCard({ p }) {
-  const [imgRef, imgOffset] = useParallax(0.12);
+  const [imgRef, imgOffset] = useParallax(isMobile ? 0 : 0.03);
   const [ref, visible] = useReveal();
 
   return (
@@ -80,8 +93,17 @@ function ProjectCard({ p }) {
           src={p.image}
           alt={p.name}
           loading="lazy"
-          style={{ transform: `translate3d(0, ${imgOffset}px, 0) scale(1.1)` }}
-          className="absolute inset-0 h-[115%] w-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-700 will-change-transform"
+          decoding="async"
+          style={{
+            transform: isMobile
+              ? "scale(1.02)"
+              : `translate3d(0, ${imgOffset}px, 0) scale(1.1)`,
+          }}
+          className={`absolute inset-0 w-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-700 ${
+            isMobile
+              ? "h-full"
+              : "h-[115%] will-change-transform"
+          }`}
         />
 
         <div className="absolute inset-0 bg-gradient-to-t from-[#0F111A] via-[#0F111A]/20 to-transparent" />
@@ -111,73 +133,70 @@ export default function Proof() {
       className="relative py-24 md:py-32 bg-[#07080F]"
     >
       <div className="mx-auto max-w-7xl px-6 md:px-10 lg:px-12">
-        {/* Stats */}
+        
+        {/* STATS */}
         <div
           data-testid="stats-bar"
-          className="grid grid-cols-2 md:grid-cols-4 border border-[#1E2235] rounded-2xl overflow-hidden divide-x divide-[#1E2235] [&>*:nth-child(3)]:border-t md:[&>*:nth-child(3)]:border-t-0 [&>*:nth-child(4)]:border-t md:[&>*:nth-child(4)]:border-t-0 [&>*:nth-child(2n+1)]:border-l-0 md:[&>*]:border-t-0"
+          className="grid grid-cols-2 md:grid-cols-4 border border-[#1E2235] rounded-2xl overflow-hidden divide-x divide-[#1E2235]"
         >
           {STATS.map((s) => (
             <div
               key={s.v}
-              className="p-8 md:p-10 bg-gradient-to-br from-[#0F111A] to-[#0A0C14]"
+              className="p-6 md:p-10 bg-gradient-to-br from-[#0F111A] to-[#0A0C14]"
             >
-              <div className="font-display font-black text-4xl md:text-5xl tracking-tighter text-white">
+              <div className="font-display font-black text-3xl md:text-5xl tracking-tighter text-white">
                 {s.k}
               </div>
 
-              <div className="mt-2 text-[11px] uppercase tracking-[0.22em] text-[#94A3B8]">
+              <div className="mt-2 text-[10px] md:text-[11px] uppercase tracking-[0.22em] text-[#94A3B8]">
                 {s.v}
               </div>
             </div>
           ))}
         </div>
 
-        {/* Logo marquee */}
-        <div className="mt-20">
+        {/* LOGOS */}
+        <div className="mt-20 overflow-hidden">
           <div className="text-center text-[11px] uppercase tracking-[0.28em] text-[#94A3B8] mb-10">
             — Trusted by leading hotels, developers & operators
           </div>
 
-          <div className="relative overflow-hidden py-6 border-y border-[#1E2235]">
-            <div className="flex w-max animate-marquee">
-              {[0, 1].map((dup) => (
+          <div className="relative overflow-hidden border-y border-[#1E2235] py-6">
+            <div className="flex w-max animate-marquee gap-5 md:gap-8">
+              {[...LOGOS, ...LOGOS].map((logo, i) => (
                 <div
-                  key={dup}
-                  aria-hidden={dup === 1}
-                  className="flex shrink-0 items-center gap-16 md:gap-24 pr-16 md:pr-24"
+                  key={i}
+                  data-testid={`client-logo-${i}`}
+                  className="shrink-0 flex items-center justify-center rounded-xl bg-white/[0.04] border border-white/10 px-5 md:px-6 py-3 h-20 md:h-24 min-w-[170px] md:min-w-[220px]"
                 >
-                  {LOGOS.map((logo, i) => (
-                    <div
-                      key={`${dup}-${i}`}
-                      data-testid={
-                        dup === 0 ? `client-logo-${i}` : undefined
-                      }
-                      title={logo.name}
-                      className="shrink-0 flex items-center justify-center rounded-xl bg-white/[0.04] border border-white/10 px-6 py-3 h-20 md:h-24 min-w-[180px] md:min-w-[220px] hover:bg-white/[0.08] hover:border-white/20 transition-colors"
-                    >
-                      <img
-                        src={logo.src}
-                        alt={logo.name}
-                        loading="lazy"
-                        className="h-12 md:h-14 w-auto max-w-full object-contain"
-                        style={{
-                          mixBlendMode: "screen",
-                          filter: "brightness(1.8) contrast(1.15)",
-                        }}
-                      />
-                    </div>
-                  ))}
+                  <img
+                    src={logo.src}
+                    alt={logo.name}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-10 md:h-14 w-auto max-w-full object-contain"
+                    style={{
+                      mixBlendMode: "screen",
+                      filter: isMobile
+                        ? "brightness(1.45)"
+                        : "brightness(1.8) contrast(1.15)",
+                    }}
+                  />
                 </div>
               ))}
             </div>
 
-            <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#07080F] to-transparent" />
+            {!isMobile && (
+              <>
+                <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#07080F] to-transparent" />
 
-            <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#07080F] to-transparent" />
+                <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#07080F] to-transparent" />
+              </>
+            )}
           </div>
         </div>
 
-        {/* Project highlights */}
+        {/* PROJECTS */}
         <div className="mt-24">
           <div className="flex items-end justify-between mb-10">
             <h3
@@ -187,9 +206,11 @@ export default function Proof() {
               Project highlights
             </h3>
 
-            <div className="text-sm text-[#94A3B8] hidden md:block">
-              Recent deployments across Dubai & the UAE
-            </div>
+            {!isMobile && (
+              <div className="text-sm text-[#94A3B8]">
+                Recent deployments across Dubai & the UAE
+              </div>
+            )}
           </div>
 
           <div className="grid md:grid-cols-3 gap-5">

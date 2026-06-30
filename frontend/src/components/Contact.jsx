@@ -14,6 +14,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { SITE } from "../lib/site";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
@@ -28,6 +29,7 @@ export default function Contact({
   });
 
   const [loading, setLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState("");
 
   const update =
     (k) =>
@@ -44,6 +46,10 @@ export default function Contact({
       toast.error("Please provide your name and phone.");
       return;
     }
+    if (!captchaToken) {
+      toast.error("Please verify captcha.");
+      return;
+    }
 
     setLoading(true);
 
@@ -54,6 +60,7 @@ export default function Contact({
         email: form.email.trim() || null,
         message: form.message.trim() || null,
         source: defaultSource,
+        captcha: captchaToken,
       });
 
       toast.success(
@@ -300,6 +307,12 @@ export default function Contact({
                   className="mt-2 bg-[#05050A] border-[#1E2235] text-white placeholder:text-[#64748b] focus-visible:ring-[#0055FF] focus-visible:ring-offset-0"
                 />
               </div>
+<div className="mt-6">
+  <ReCAPTCHA
+    sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
+    onChange={(token) => setCaptchaToken(token)}
+  />
+</div>
 
               {/* SUBMIT */}
               <div className="mt-8">

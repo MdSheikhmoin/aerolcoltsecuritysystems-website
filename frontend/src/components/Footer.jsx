@@ -9,11 +9,13 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-6 md:px-10 lg:px-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="flex items-center gap-3">
           <img
-            src={SITE.logo}
-            alt="Aerol Colt Security Systems"
-            className="h-12 w-12 object-contain drop-shadow-[0_0_18px_rgba(0,85,255,0.7)]"
-            style={{ filter: "url(#logo-knockout)" }}
-          />
+  src={SITE.logo}
+  alt="Aerol Colt Security Systems"
+  width="320"
+  height="90"
+  className="h-14 w-auto object-contain"
+  style={{ filter: "url(#logo-knockout)" }}
+/>
           <div>
             <div className="font-display font-bold text-white tracking-tight">
               {SITE.company}
