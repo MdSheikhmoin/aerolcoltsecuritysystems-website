@@ -129,3 +129,6 @@ memory/test_credentials.md
 # =========================================================
 
 android-sdk/
+backend/config/database.php
+frontend/.env
+backend/api/error_log

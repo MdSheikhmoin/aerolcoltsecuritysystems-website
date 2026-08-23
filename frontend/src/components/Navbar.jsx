@@ -7,7 +7,7 @@ const NAV_LINKS = [
   { label: "Products", href: "#products", id: "nav-products" },
   { label: "Services", href: "#services", id: "nav-services" },
   { label: "About", href: "#about", id: "nav-about" },
-  { label: "Careers", href: "#careers", id: "nav-careers" },
+  { label: "Careers", href: "/careers", id: "nav-careers" },
   { label: "Contact", href: "#contact", id: "nav-contact" },
 ];
 
@@ -51,6 +51,15 @@ export default function Navbar() {
     }
   };
 
+  const handleNavClick = (e, href) => {
+    if (href === "/careers") {
+      return;
+    }
+
+    e.preventDefault();
+    scrollTo(href);
+  };
+
   return (
     <header
       data-testid="site-navbar"
@@ -61,7 +70,7 @@ export default function Navbar() {
       }`}
     >
       <div className="mx-auto max-w-7xl px-4 md:px-10 lg:px-12">
-        
+
         {/* DESKTOP */}
         <div className="hidden md:flex py-4 items-center justify-between">
           <a
@@ -97,10 +106,7 @@ export default function Navbar() {
               <a
                 key={l.id}
                 href={l.href}
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollTo(l.href);
-                }}
+                onClick={(e) => handleNavClick(e, l.href)}
                 className="text-sm text-[#cbd5e1] hover:text-white transition-colors relative after:absolute after:left-0 after:-bottom-1.5 after:h-[2px] after:w-0 after:bg-[#00E5FF] hover:after:w-full after:transition-all after:duration-300"
               >
                 {l.label}
@@ -118,7 +124,7 @@ export default function Navbar() {
 
         {/* MOBILE */}
         <div className="md:hidden flex items-center gap-4 py-4 overflow-hidden">
-          
+
           {/* LOGO */}
           <a
             href="#home"
@@ -143,10 +149,7 @@ export default function Navbar() {
                 <a
                   key={l.id}
                   href={l.href}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    scrollTo(l.href);
-                  }}
+                  onClick={(e) => handleNavClick(e, l.href)}
                   className="text-sm whitespace-nowrap text-[#cbd5e1] hover:text-white transition-colors"
                 >
                   {l.label}
@@ -155,6 +158,7 @@ export default function Navbar() {
             </div>
           </div>
         </div>
+
       </div>
     </header>
   );

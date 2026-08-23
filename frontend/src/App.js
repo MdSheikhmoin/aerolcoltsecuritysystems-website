@@ -4,7 +4,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
 
 import Navbar from "@/components/Navbar";
-import Hero from "@/components/Hero";
 import WhyChooseUs from "@/components/WhyChooseUs";
 import Products from "@/components/Products";
 import Services from "@/components/Services";
@@ -12,10 +11,13 @@ import Footer from "@/components/Footer";
 import LogoFilter from "@/components/LogoFilter";
 import Solidarity from "@/components/Solidarity";
 
-// Lazy-loaded heavy sections
+import CareersPage from "@/pages/CareersPage";
+import JobDetailsPage from "@/pages/JobDetailsPage";
+import JobApplicationPage from "@/pages/JobApplicationPage";
+
+// Lazy-loaded sections
 const Proof = lazy(() => import("@/components/Proof"));
 const FinalCTA = lazy(() => import("@/components/FinalCTA"));
-const Careers = lazy(() => import("@/components/Careers"));
 const Contact = lazy(() => import("@/components/Contact"));
 
 const scrollToAssessment = () => {
@@ -59,10 +61,6 @@ const Home = () => (
     </Suspense>
 
     <Suspense fallback={<SectionLoader />}>
-      <Careers />
-    </Suspense>
-
-    <Suspense fallback={<SectionLoader />}>
       <Contact />
     </Suspense>
 
@@ -87,7 +85,31 @@ function App() {
 
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
+
+          {/* HOME */}
+          <Route
+            path="/"
+            element={<Home />}
+          />
+
+          {/* CAREERS */}
+          <Route
+            path="/careers"
+            element={<CareersPage />}
+          />
+
+          {/* DYNAMIC JOB DETAILS */}
+          <Route
+            path="/careers/job/:slug"
+            element={<JobDetailsPage />}
+          />
+
+          {/* JOB APPLICATION */}
+          <Route
+            path="/careers/job/:slug/apply"
+            element={<JobApplicationPage />}
+          />
+
         </Routes>
       </BrowserRouter>
     </div>

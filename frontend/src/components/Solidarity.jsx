@@ -80,7 +80,7 @@ export default function Solidarity({ onCtaClick }) {
 
             <div className="flex items-center gap-3 text-white">
               <span className="h-2 w-2 rounded-full bg-black border border-white/30" />
-              Trusted Security Systems
+              Certified Security Systems
             </div>
           </div>
         </div>
